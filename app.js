@@ -3,8 +3,6 @@ const addTaskBtn = document.querySelector('#addTaskBtn');
 const taskContainer = document.querySelector('.task-container');
 const removeAllBtn = document.querySelector('#removeAllBtn');
 
-let tasks = [];
-
 function addTask(content, isDone = false, isRestored = false) {
     if (content === "") return; // exit if user input is blank
     
