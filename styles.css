@@ -149,11 +149,6 @@ body {
     cursor: pointer;
 }
 
-.task button:active {
-    background-color: none !important;
-    color: none;
-}
-
 .task #markDoneBtn {
     flex: .8;
     background: none;
