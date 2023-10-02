@@ -109,9 +109,9 @@ function saveTasks() {
         }, 100 * index)
     });
 
-    // save them after finish restoring
+    // add remove all button accordingly
     setTimeout(() => {
-        saveTasks();
+        toggleRemoveAll(tasks.length);
     }, tasks.length * 100);
 })();
 
