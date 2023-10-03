@@ -95,7 +95,8 @@ function saveTasks() {
 
     localStorage.setItem('data', JSON.stringify(formattedTasks));
 
-    toggleRemoveAll(formattedTasks.length);
+    // add remove all button accordingly
+    removeAllBtn.classList.toggle('show', formattedTasks.length > 1);
 }
 
 (function restoreTasks() {
@@ -111,7 +112,7 @@ function saveTasks() {
 
     // add remove all button accordingly
     setTimeout(() => {
-        toggleRemoveAll(tasks.length);
+        removeAllBtn.classList.toggle('show', tasks.length > 1);
     }, tasks.length * 100);
 })();
 
@@ -121,16 +122,6 @@ function removeAllTasks() {
     saveTasks();  // empty localStorage data
     removeAllBtn.classList.remove('show');  // remove the button itself
 }
-
-function toggleRemoveAll(length) {
-    // if tasks.length > 1, show the removeAllBtn, else hide it
-    if (length > 1 && !removeAllBtn.classList.contains('show')) {
-        removeAllBtn.classList.add('show');
-    } else if (length < 2 && removeAllBtn.classList.contains('show')) {
-        removeAllBtn.classList.remove('show');
-    }
-}
-
 
 addTaskBtn.addEventListener('click', () => addTask(taskInput.value));
 taskInput.addEventListener('keydown', (e) => {
