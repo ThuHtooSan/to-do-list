@@ -47,15 +47,8 @@ function manageTask(e) {
         setTimeout(() => {
             parent.remove();
         }, 1100);
-    } else if (parent.matches('button#removeBtn')) {
-        parent.parentElement.classList.add('removed');
-        setTimeout(() => {
-            parent.parentElement.remove();
-        }, 1100);
 
     // Marking the task as done
-
-    // if the target is the button
     } else if (target.matches('button#markDoneBtn')) {
         if (parent.classList.contains('done')) {
             target.innerHTML = `<i class="fa-regular fa-circle"></i>`;
@@ -63,16 +56,6 @@ function manageTask(e) {
         } else {
             target.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
             parent.classList.add('done');
-        }
-
-    // if the target is the icon inside a button
-    } else if (parent.matches('button#markDoneBtn')) {
-        if (parent.parentElement.classList.contains('done')) {
-            target.outerHTML = `<i class="fa-regular fa-circle"></i>`;
-            parent.parentElement.classList.remove('done');
-        } else {
-            target.outerHTML = `<i class="fa-solid fa-circle-check"></i>`;
-            parent.parentElement.classList.add('done');
         }
     } else return; // don't save if the target 
                    // matches none of the above conditions
@@ -100,8 +83,11 @@ function saveTasks() {
 }
 
 (function restoreTasks() {
-    const tasks = JSON.parse(localStorage.getItem('data'));
-    if (!tasks) return;  // exit if no tasks were found
+    const data = localStorage.getItem('data');
+
+    if (!data) return; // exit if no tasks were found
+
+    const tasks = JSON.parse(data);
 
     // add tasks with nice animation + delay
     tasks.forEach((task, index) => {
@@ -117,10 +103,9 @@ function saveTasks() {
 })();
 
 function removeAllTasks() {
-    const tasks = document.querySelectorAll('.task-container .task');
-    tasks.forEach((task, index) => task.remove());
-    saveTasks();  // empty localStorage data
-    removeAllBtn.classList.remove('show');  // remove the button itself
+    taskContainer.innerHTML = "";
+    localStorage.removeItem('data');  // empty task data
+    removeAllBtn.classList.remove('show');  // hide the button itself
 }
 
 addTaskBtn.addEventListener('click', () => addTask(taskInput.value));

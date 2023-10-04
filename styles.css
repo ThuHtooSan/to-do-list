@@ -272,6 +272,11 @@ body {
     background: var(--peach);
 }
 
+/* Event delegation fix */
+button > * {
+    pointer-events: none;
+}
+
 @media (prefers-color-scheme: dark) {
     :root {
         --yellow: #8d62620b;
