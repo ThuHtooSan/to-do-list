@@ -1,32 +1,58 @@
 const taskInput = document.querySelector('#task-input');
 const addTaskBtn = document.querySelector('#addTaskBtn');
 const taskContainer = document.querySelector('.task-container');
+const tasks = document.getElementsByClassName('task');
 const removeAllBtn = document.querySelector('#removeAllBtn');
+
+// Button class
+class Button {
+    #isDone = false;
+    #id;
+    #icon;
+    #doneIcon;
+
+    constructor(id, icon, doneIcon, isDone) {
+        this.#id = id;
+        this.#icon = icon;
+        this.#doneIcon = doneIcon;
+        this.#isDone = isDone
+    }
+
+    get id() {
+        return this.#id;
+    }
+
+    get icon() {
+        return this.#isDone ? this.#doneIcon : this.#icon;
+    }
+}
 
 function addTask(content, isDone = false, isRestored = false) {
     if (content === "") return; // exit if user input is blank
     
     const li = document.createElement('li');
+    isDone ? li.classList.add('task', 'done') : li.classList.add('task');
 
     const p = document.createElement('p');
     p.textContent = content;
     taskInput.value = ''; // clear the input
 
-    const markDoneBtn = document.createElement('button');
-    markDoneBtn.setAttribute('id', 'markDoneBtn');
-    if (!isDone) {
-        li.classList.add('task');
-        markDoneBtn.innerHTML = `<i class="fa-regular fa-circle"></i>`;
-    } else {
-        li.classList.add('task', 'done');
-        markDoneBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i>`
-    }
+    const markDoneBtnObj = new Button('markDoneBtn', `<i class="fa-regular fa-circle"></i>`, `<i class="fa-solid fa-circle-check"></i>`, isDone);
+    const editBtnObj = new Button('editBtn', `<i class="fa-solid fa-pen-to-square"></i>`);
+    const removeBtnObj = new Button('removeBtn', `<i class="fa-solid fa-trash-can"></i>`);
 
-    const removeBtn = document.createElement('button');
-    removeBtn.setAttribute('id', 'removeBtn');
-    removeBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
-
-    [markDoneBtn, p, removeBtn].forEach(elem => li.appendChild(elem));
+    let markDoneBtn, editBtn, removeBtn;
+    
+    // create button elements and assign id for each
+    [markDoneBtn, editBtn, removeBtn] = [markDoneBtnObj, editBtnObj, removeBtnObj]
+        .map(obj => {
+            const button = document.createElement('button');
+            button.setAttribute('id', obj.id);
+            button.innerHTML = obj.icon;
+            return button;
+        });
+        
+    [markDoneBtn, p, editBtn, removeBtn].forEach(elem => li.appendChild(elem));
 
     if (isRestored) {
         li.style.animation = "slideUp 1s"; // add restore animation
@@ -35,6 +61,42 @@ function addTask(content, isDone = false, isRestored = false) {
         taskContainer.prepend(li);
         saveTasks();
     }
+}
+
+function displayEditPage(content, task) {
+    const container = document.createElement('div');
+    container.classList.add('edit-container');
+
+    const input = document.createElement('input');
+    input.setAttribute('type', 'text');
+    input.setAttribute('id', 'task-edit');
+    input.setAttribute('placeholder', 'Edit your task');
+    input.value = content;
+    input.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") editTask(input.value, task);
+    })
+
+    const editBtnObj = new Button('doneBtn', `<i class="fa-solid fa-check"></i>`);
+    const editBtn = document.createElement('button');
+    editBtn.setAttribute('id', editBtnObj.id);
+    editBtn.innerHTML = editBtnObj.icon;
+    editBtn.addEventListener('click', () => editTask(input.value, task));
+
+    [input, editBtn].forEach(elem => container.appendChild(elem));
+
+    document.body.append(container);
+}
+
+function editTask(newContent, task) {
+    if (newContent === "") return;
+
+    const taskContent = task.firstChild.nextElementSibling;
+    const editContainer = document.querySelector('.edit-container');
+
+    taskContent.textContent = newContent;
+    editContainer.classList.add('hide');
+    saveTasks();
+    setTimeout(() => editContainer.remove(), 300);
 }
 
 function manageTask(e) {
@@ -57,6 +119,8 @@ function manageTask(e) {
             target.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
             parent.classList.add('done');
         }
+    } else if (target.matches('button#editBtn')) {
+        displayEditPage(target.previousElementSibling.textContent, parent)
     } else return; // don't save if the target 
                    // matches none of the above conditions
 
@@ -64,8 +128,6 @@ function manageTask(e) {
 }
 
 function saveTasks() {
-    const tasks = document.querySelectorAll('.task-container .task');
-
     const formattedTasks = [...tasks].reduce((result, task) => {
         if (!task.classList.contains('removed')) {
             result.push({ 

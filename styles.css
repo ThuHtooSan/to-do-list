@@ -2,8 +2,10 @@
 :root {
     --yellow: #EBEF95;
     --orange: #EFB495;
+    --light-peach: #ef9d9d;
     --peach: #EF9595;
     --white: #fff;
+    --black: #000;
     --red: #e24675;
     --grey: grey;
     --light-grey: rgb(162, 162, 162);
@@ -114,7 +116,6 @@ body {
     color: var(--font);
     overflow: hidden;
     border-radius: 25px;
-    gap: 5px;
     box-shadow: 0 0 8px var(--orange);
     transition: .5s;
     animation: slideDown 1s;
@@ -155,15 +156,29 @@ body {
     font-size: 1.2rem;
     color: var(--peach);
     padding-left: 5px;
+    margin-right: 5px;
     transition: .5s;
 }
 
+.task #editBtn,
 .task #removeBtn {
     flex: 1.1;
-    background: var(--peach);
     font-size: 1rem;
     color: var(--white);
     transition: .5s;
+}
+
+.task #editBtn {
+    background: var(--light-peach);
+}
+
+.task #editBtn:hover {
+    font-size: .8rem;
+    background: var(--orange);
+}
+
+.task #removeBtn {
+    background: var(--peach);
 }
 
 .task #removeBtn:hover {
@@ -243,6 +258,61 @@ body {
     }
 }
 
+/* Task editing */
+
+.edit-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background: var(--yellow);
+    animation: fadeIn .3s;
+    transition: .3s;
+}
+
+.edit-container.hide {
+    opacity: 0;
+    visibility: 0;
+}
+
+.edit-container #task-edit {
+    border: 2px solid var(--light-peach);
+    box-shadow: 0 0 5px var(--orange);
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--font);
+    font-size: 1.1rem;
+    transition: .3s;
+}
+
+.edit-container #task-edit:focus {
+    outline: 2px solid var(--light-peach);
+}
+
+.edit-container #doneBtn {
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--light-peach);
+    box-shadow: 0 0 5px var(--orange);
+    color: var(--white);
+    cursor: pointer;
+    transition: .5s;
+}
+
+.edit-container #doneBtn:hover {
+    font-size: .8rem;
+    background: var(--orange);
+}
+
 /* source code container */
 
 .source-code {
@@ -281,6 +351,7 @@ button > * {
     :root {
         --yellow: #8d62620b;
         --orange: #efb4953d;
+        --light-peach: #cb9393;
         --peach: #ce8282;
         --white: #e0e0e0;
         --red: #e24675;
@@ -297,5 +368,9 @@ button > * {
 
     ::placeholder {
         color: var(--dark-grey);
+    }
+
+    .edit-container {
+        background: var(--black);
     }
 }
